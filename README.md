@@ -456,20 +456,25 @@ Provide evidence in text file `answers/answer-exercise-10.txt`.
 #### Transfer change log to `Invalid` and `Solved`
 
 It is a pity that the change log gets lost when
-a contradiction of solution are found.
+a contradiction or solution are found.
 
 Things to do in [`Solver.hs`](src/Solver.hs):
 1. Add `iChangeLog` and `sChangeLog` fields to `Invalid` and `Solved`.
 2. Adapt `flattenM` and `>>=` to do the transfer.
 
-#### Also report the log in `Invalid` and `Solved`
+#### Add a level parameter for general contradiction strategy
+
+We want to indent the change log
+to visualize the recursive structure of backtracking
+as done by the self-applied general contradiction strategy.
+To that end, we can add a level parameter.
 
 So far, monad `M` is -- what is known as -- a _Writer_ monad.
 Recall that strategies have type `Puzzle -> M Puzzle`.
 The extra information produced by the preceding strategy
 is not available inside the next strategy
 (such as inside `update` and the strategies).
-It is handled completely outside by the monadic composition
+It is handled completely outside, by the monadic composition
 (viz. `>>=` and `>=>`).
 
 To get the ability to use that information,
@@ -477,18 +482,13 @@ we need a [_State_ monad](http://learnyouahaskell.com/for-a-few-monads-more#stat
 A State monad has the shape `data M a = M (State -> (a, State))`.
 You also need to get the (shortcut) cases into this monad.
 
-#### Add a level parameter for general contradiction
-
-This level can then be used to indent the change log accordingly,
-to visualize the recursive structure of backtracking.
-Again, this needs a `State` monad, to carry the current level along.
-
 #### Add a parameter to stop the solver at the first change
 
 This is similar adding a level parameter,
 except that a [_Reader_ monad](http://learnyouahaskell.com/for-a-few-monads-more#reader) would suffice
 (this is a special case of the _State_ monad: `data M a = M (Env -> a)`).
-However, now the monadic composition must depend on this parameter.
+However, now the monadic composition itself must depend on this parameter,
+to stop it at the first change, and ignore/bypass further changes.
 
 
 ## (End of Assignment 2)
