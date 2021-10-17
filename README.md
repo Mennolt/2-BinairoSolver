@@ -202,7 +202,7 @@ and the date, and commit this text file to the root of your repository.
 
   `printM $ example8FT`
 
-  `printM $ mF sT example8FT`
+  `printM $ mF sT (mUnwrap example8FT)`
   
   Note that the second application of `mF sT` reports no change.
   (Strategy `mF sT` has abbreviation `sFT`)
