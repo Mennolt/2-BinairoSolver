@@ -1,0 +1,27 @@
+cabal-version:        3.4
+name:                 BinairoSolver
+version:              0.0.0.1
+author:               Tom Verhoeff
+maintainer:           T.Verhoeff@tue.nl
+extra-source-files:   README.md
+
+library
+    exposed-modules:  Binairos,
+                      Solver,
+                      Utilities
+    build-depends:    base ^>=4.15.0.0
+    hs-source-dirs:   src
+    default-language: Haskell2010
+    ghc-options:      -Wall
+
+test-suite BinairoSolver-test
+    default-language: Haskell2010
+    type:             exitcode-stdio-1.0
+    hs-source-dirs:   test
+    main-is:          Spec.hs
+    build-depends:
+                      base ^>=4.15.0.0,
+                      hspec,
+                      QuickCheck,
+                      BinairoSolver,
+    ghc-options:      -Wall
