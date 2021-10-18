@@ -191,6 +191,9 @@ in the text file `answers/answer-exercise-2.txt`.
 Also include the author names, their TU/e ID number,
 and the date, and commit this text file to the root of your repository.
 
+*Note* If `cabal repl` does not seem to load all three modules, run `cabal
+clean` first.
+
 * `printPR example6PR`
 * `printPR example8PR`
 * `printP example6`
