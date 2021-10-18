@@ -54,7 +54,7 @@ module Solver (
   printE :: Extra -> IO ()
   -- TODO 4.2 and TODO 5.3: also print added fields
   printE (Extra b n) =
-    do putStrLn (if b then "changes: " ++ n else "No change")
+    do putStrLn (if b then "changes: " ++ show n else "No change")
 
   {-|
     Function to join extra result data.
@@ -95,7 +95,7 @@ module Solver (
   instance Monad M where
     -- return :: a -> M a
     -- TODO 4.4 and TODO 5.5: add units for added fields
-    return p = M p (Extra False 1)
+    return p = M p (Extra False 0)
 
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`
@@ -144,7 +144,7 @@ module Solver (
   update cs loc p
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
-    | otherwise = M q (Extra True)  -- TODO 4.5 and 5.6: add extra change data
+    | otherwise = M q (Extra True 1)  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
       gr loc2 = if loc2 == loc then cs else grid p loc2
