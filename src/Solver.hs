@@ -36,6 +36,13 @@ module Solver (
   import Control.Monad.Fix
 
   -- TODO 5.1: add data type `Change`; its `show`, and `showChanges`
+  data Change = Change {cLoc :: Location, cCS :: CellState, cNote :: String}
+
+  instance Show Change where
+    show (Change cLoc cCS cNote) = "Location" ++ show cLoc ++ "Set to" ++ show cCS ++ cNote
+  
+  showChanges :: [Change] -> String
+  showChanges (change : changes) = joinStr (show change)  (showChanges changes)
 
   {-|
     = Extra data type
@@ -45,7 +52,9 @@ module Solver (
   data Extra = Extra {
       eChanged :: Bool,
     -- TODO 4.1 and TODO 5.2: add fields
-    eChangeCount :: Int 
+      
+      eChangeCount :: Int,
+      eChangeLog :: [Change]
     }
 
   {-|
@@ -53,16 +62,16 @@ module Solver (
   -}
   printE :: Extra -> IO ()
   -- TODO 4.2 and TODO 5.3: also print added fields
-  printE (Extra b n) =
-    do putStrLn (if b then "changes: " ++ n else "No change")
+  printE (Extra b n changeLog) =
+    do putStrLn (if b then "nr. changes: " ++ show n ++ "Details:" ++ show changeLog else "No change")
 
   {-|
     Function to join extra result data.
   -}
   joinExtra :: Extra -> Extra -> Extra
   -- TODO 4.3 and TODO 5.4: include joining of added fields
-  joinExtra (Extra b1 n1) (Extra b2 n2) =
-    Extra (b1 || b2) (n1 + n2)
+  joinExtra (Extra b1 n1 changeLog1) (Extra b2 n2 changeLog2) =
+    Extra (b1 || b2) (n1 + n2) (changeLog2 ++ changeLog1)
 
   {-|
     = M data type
@@ -95,7 +104,7 @@ module Solver (
   instance Monad M where
     -- return :: a -> M a
     -- TODO 4.4 and TODO 5.5: add units for added fields
-    return p = M p (Extra False 1)
+    return p = M p (Extra False 0 [])
 
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`
@@ -140,11 +149,11 @@ module Solver (
     * `cs /= Empty && cs /= Undefined`
   -}
   -- TODO 5.6: add `note` parameter
-  update :: CellState -> Location -> Strategy
-  update cs loc p
+  update :: String -> CellState -> Location -> Strategy
+  update note cs loc p
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
-    | otherwise = M q (Extra True)  -- TODO 4.5 and 5.6: add extra change data
+    | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
       gr loc2 = if loc2 == loc then cs else grid p loc2
@@ -174,10 +183,10 @@ module Solver (
     Function to fill all empty cells in a given collection of locations.
   -}
   -- TODO 5.7: add `note` parameter
-  fillEmpty :: CellState -> [Location] -> Strategy
-  fillEmpty c = mC . (map upd)
+  fillEmpty :: CellState -> String -> [Location] -> Strategy
+  fillEmpty c note = mC . (map upd)
     where
-      upd = update c
+      upd = update note c
 
   {-|
     Triplet strategy: completes one forced triplet, if available.
@@ -185,7 +194,7 @@ module Solver (
   sT :: Strategy
   sT p = let r = findLocs p (allTripletLocs p) 2
     in if null r then return p
-       else let (locs, cs) = head r in fillEmpty (opposite cs) locs p  -- TODO 5.7: add note "sT"
+       else let (locs, cs) = head r in fillEmpty (opposite cs) "fillEmpty" locs p  -- TODO 5.7: add note "sT"
 
   {-|
     Fixpoint meta-strategy: apply strategy until no change.
@@ -209,7 +218,7 @@ module Solver (
   sL :: Strategy
   sL p = let r = findLocs p (allLineLocs p) (size p `div` 2)
     in if null r then return p
-       else let (locs, cs) = head r in fillEmpty (opposite cs) locs p  -- TODO 5.7: add note "sL"
+       else let (locs, cs) = head r in fillEmpty (opposite cs) "fillEmpty" locs p  -- TODO 5.7: add note "sL"
 
   {-|
     Fixpoint of the pair fixpoint-of-triplet-strategy and line strategy.
@@ -224,10 +233,10 @@ module Solver (
   mG1 cs loc s p =
     if grid p loc /= Empty then return p
     else
-      let mq = update cs loc p >>= s  -- TODO 5.7; add note "mG try"
+      let mq = update "mG1" cs loc p >>= s  -- TODO 5.7; add note "mG try"
           q = mUnwrap mq  -- TODO 6.6; remove this and use `case mq of` with patterns instead of `if then else`
       in if isValid q then return p
-      else update (opposite cs) loc p  -- TODO 5.7: add note "mG found"
+      else update "mG1" (opposite cs) loc p  -- TODO 5.7: add note "mG found"
       -- TODO 6.6 and TODO 7.6: handle the appropriate cases `Invalid q` and `Solved q` respectively
 
   {-|
