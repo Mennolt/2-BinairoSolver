@@ -1,0 +1,24 @@
+# Answer to Exercise 2
+
+## Author Meta-Data
+
+AUTHOR1 = Mennolt van Alten
+IDNR1 = 1289667
+
+AUTHOR2 = Ignacio Jordano de Castro
+IDNR2 = 1769626
+
+DATA = 2021-10-18
+
+## Answer
+
+1. Thanks to lazy evaluation, only the computations until the first triplet or line with an empty cell is found 
+   are actually computed. After that it does not compute more.
+2. This is actually stil inefficient when filling up the whole field: There is a Schlemiels painter situation here.
+   When halfway through the puzzle, it is possible the first half of the puzzle is solved. 
+   Every time the findLocs looks for the next open spot, it has to conclude for each triple/line in the first half
+   that that one has no empty spots, resulting in lots of duplicate work.
+3. In the first command, solution is never used thus never computed. 
+   In the second it needs to actually be computed and then suddenly it takes very long.
+
+## (End of Answer)
