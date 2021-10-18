@@ -127,11 +127,11 @@ module Binairos (
     Function to count how often each cell state occurs in a list.
   -}
   countCS :: [CellState] -> (Int, Int, Int, Int)
-  countCS = foldr upd (error "TODO 1.2: provide base case") where
-    upd Empty (cE, c0, c1, cU) = error "TODO 1.2: provide definition of this step"
-    upd Zero (cE, c0, c1, cU) = error "TODO 1.2: provide definition of this step"
-    upd One (cE, c0, c1, cU) = error "TODO 1.2: provide definition of this step"
-    upd Undefined (cE, c0, c1, cU) = error "TODO 1.2: provide definition of this step"
+  countCS = foldr upd (0, 0, 0, 0) where
+    upd Empty (cE, c0, c1, cU) = (cE + 1, c0, c1, cU)
+    upd Zero (cE, c0, c1, cU) = (cE, c0 + 1, c1, cU)
+    upd One (cE, c0, c1, cU) = (cE, c0, c1 + 1, cU)
+    upd Undefined (cE, c0, c1, cU) = (cE, c0, c1, cU + 1)
 
   {-|
     = Location data type
