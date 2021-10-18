@@ -25,8 +25,9 @@ module Utilities (
     Function `joinStr` joins the strings in a list, inserting a given separator and
     putting a given terminator at the end.
 
-    prop> joinStr sep term (splitStr "abc") = "a" ++ sep ++ "b" ++ sep ++ "c" ++ term
+    prop> joinStr sep term ["a", "b", "c"] = "a" ++ sep ++ "b" ++ sep ++ "c" ++ term
   -}
   joinStr :: String -> String -> [String] -> String
   joinStr sep term = foldr g term where
-    s `g` t = error "TODO 1.1: complete the definition, use an `if`"
+    s `g` t = if t == [] then s ++ term
+              else s ++ sep ++ t
