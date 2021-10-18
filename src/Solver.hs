@@ -22,6 +22,7 @@ module Solver (
               , mC
               , findLocs
               , sT
+              , mF
               , sFT
               , sL
               , sFPFTL
