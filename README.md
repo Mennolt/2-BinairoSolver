@@ -179,7 +179,7 @@ There are three uses of `foldr` that are incomplete.
 Complete those definitions to obtain code that can run:
 1. In [`Utilies.hs`](src/Utilities.hs), function `joinStr`
 2. In [`Binairos.hs`](src/Binairos.hs), function `countCS`
-3. In [`Solver.hs`](src/Solver.hs), function `sC`
+3. In [`Solver.hs`](src/Solver.hs), function `mC`
 
 There are test cases for `joinStr` and `countCS`,
 invoked by `cabal test`.
