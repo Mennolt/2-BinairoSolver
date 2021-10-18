@@ -43,8 +43,9 @@ module Solver (
     Extra result data for monad `M`.
   -}
   data Extra = Extra {
-      eChanged :: Bool
+      eChanged :: Bool,
     -- TODO 4.1 and TODO 5.2: add fields
+    eChangeCount :: Int 
     }
 
   {-|
@@ -52,16 +53,16 @@ module Solver (
   -}
   printE :: Extra -> IO ()
   -- TODO 4.2 and TODO 5.3: also print added fields
-  printE (Extra b) =
-    do putStrLn (if b then "CHANGED" else "No change")
+  printE (Extra b n) =
+    do putStrLn (if b then "changes: " ++ n else "No change")
 
   {-|
     Function to join extra result data.
   -}
   joinExtra :: Extra -> Extra -> Extra
   -- TODO 4.3 and TODO 5.4: include joining of added fields
-  joinExtra (Extra b1) (Extra b2) =
-    Extra (b1 || b2)
+  joinExtra (Extra b1 n1) (Extra b2 n2) =
+    Extra (b1 || b2) (n1 + n2)
 
   {-|
     = M data type
@@ -94,7 +95,7 @@ module Solver (
   instance Monad M where
     -- return :: a -> M a
     -- TODO 4.4 and TODO 5.5: add units for added fields
-    return p = M p (Extra False)
+    return p = M p (Extra False 1)
 
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`

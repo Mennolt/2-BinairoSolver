@@ -5,8 +5,8 @@
 AUTHOR1 = Mennolt van Alten
 IDNR1 = 1289667
 
-AUTHOR2 = <name of author 2>
-IDNR2 = <TU/e ID number of author 2>
+AUTHOR2 = Ignacio Jordano de Castro
+IDNR2 = 1769626
 
 DATA = 2021-10-18
 
