@@ -165,7 +165,9 @@ module Solver (
     Function to compose list of strategies.
   -}
   mC :: [Strategy] -> Strategy
-  mC = error "TODO 1.3: Define as foldr, using mP and sE"
+  mC = foldr mP sE
+    
+  -- "TODO 1.3: Define as foldr, using mP and sE"
 
   {-|
     Function to fill all empty cells in a given collection of locations.
