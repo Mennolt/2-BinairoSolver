@@ -6,8 +6,8 @@ maintainer:           T.Verhoeff@tue.nl
 extra-source-files:   README.md
 
 library
-    exposed-modules:  Binairos,
-                      Solver,
+    exposed-modules:  Solver,
+                      Binairos,
                       Utilities
     build-depends:    base ^>=4.15.0.0
     hs-source-dirs:   src
