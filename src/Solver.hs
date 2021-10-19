@@ -45,7 +45,7 @@ module Solver (
   data Extra = Extra {
       eChanged :: Bool,
     -- TODO 4.1 and TODO 5.2: add fields
-    eChangeCount :: Int 
+      eChangeCount :: Int 
     }
 
   {-|
