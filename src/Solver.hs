@@ -39,10 +39,10 @@ module Solver (
   data Change = Change {cLoc :: Location, cCS :: CellState, cNote :: String}
 
   instance Show Change where
-    show (Change cLoc cCS cNote) = "Location" ++ show cLoc ++ "Set to" ++ show cCS ++ cNote
+    show (Change cLoc cCS cNote) = show cLoc ++ " -> " ++ show cCS ++ "  " ++ cNote
   
   showChanges :: [Change] -> String
-  showChanges (change : changes) = joinStr (show change)  (showChanges changes)
+  showChanges changes = joinStr "\n" "" (map show changes)
 
   {-|
     = Extra data type
@@ -63,7 +63,7 @@ module Solver (
   printE :: Extra -> IO ()
   -- TODO 4.2 and TODO 5.3: also print added fields
   printE (Extra b n changeLog) =
-    do putStrLn (if b then "nr. changes: " ++ show n ++ "Details:" ++ show changeLog else "No change")
+    do putStrLn (if b then "nr. changes: " ++ show n ++ "\nDetails:" ++ showChanges changeLog else "No change")
 
   {-|
     Function to join extra result data.
@@ -82,13 +82,14 @@ module Solver (
     In this assignment, we explore versions of this monad with additional data.
     This initial version adds a boolean, indicating whether the puzzle was changed.
   -}
-  data M a = M { mUnwrap :: a, mExtra :: Extra }
+  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle}
            -- TODO 6.1 and TODO 7.1: extend the monad with shortcut cases
 
   instance Functor M where
     -- fmap :: (a -> b) -> M a -> M b
     fmap f (M p extra) = M (f p) extra
     -- TODO 6.2 and TODO 7.2: add definition patterns for cases added in `M`
+    fmap f (Invalid p) = Invalid p
 
   {-|
     Function to flatten a nested monadic value.
@@ -108,6 +109,7 @@ module Solver (
 
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`
+    Invalid p >>= f = Invalid p
     m >>= f = flattenM (fmap f m)
 
   -- ignore this definition
@@ -125,7 +127,9 @@ module Solver (
     do printP p
        printE extra
   -- TODO 6.4 and TODO 7.4: add definition patterns for cases added in `M`
-
+  printM (Invalid p) = 
+    do putStrLn "INVALID"
+       printP p
 
 
   {-|
@@ -153,6 +157,7 @@ module Solver (
   update note cs loc p
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
+    | not (isValid q) = Invalid q
     | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
@@ -233,12 +238,15 @@ module Solver (
   mG1 cs loc s p =
     if grid p loc /= Empty then return p
     else
-      let mq = update "mG1" cs loc p >>= s  -- TODO 5.7; add note "mG try"
-          q = mUnwrap mq  -- TODO 6.6; remove this and use `case mq of` with patterns instead of `if then else`
-      in if isValid q then return p
-      else update "mG1" (opposite cs) loc p  -- TODO 5.7: add note "mG found"
-      -- TODO 6.6 and TODO 7.6: handle the appropriate cases `Invalid q` and `Solved q` respectively
-
+      let mq = update "mG try" cs loc p >>= s  -- TODO 5.7; add note "mG try"
+          --q = mUnwrap mq  -- TODO 6.6; remove this and use `case mq of` with patterns instead of `if then else`
+      in 
+         -- TODO 6.6 and TODO 7.6: handle the appropriate cases `Invalid q` and `Solved q` respectively
+      --if isValid q then return p
+      --else update "mG1" (opposite cs) loc p
+      case mq of
+          Invalid q -> update "mG1 found" (opposite cs) loc p
+          _ -> return p
   {-|
     General contradiction meta-strategy on all empty locations and cell states.
   -}
