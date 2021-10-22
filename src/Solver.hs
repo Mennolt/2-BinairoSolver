@@ -162,12 +162,13 @@ module Solver (
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
     | not (isValidLoc loc q) = Invalid q
-    | isSolved q = Solved q
+    | e-1 == 0 = Solved q
     | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
       gr loc2 = if loc2 == loc then cs else grid p loc2
-      q = Puzzle { size = n, grid = gr }  -- TODO 8.3: add field `empty`
+      e = empty p
+      q = Puzzle { size = n, grid = gr, empty = e-1 }  -- TODO 8.3: add field `empty`
 
   {-|
     MetaStrategy type
