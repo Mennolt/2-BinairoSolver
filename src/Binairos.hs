@@ -148,6 +148,7 @@ module Binairos (
   data Puzzle = Puzzle {
       size :: Int
     , grid :: Location -> CellState
+    , empty :: Int
     }
 
   {-|
@@ -161,17 +162,26 @@ module Binairos (
     Function to convert `PuzzleRep` to `Puzzle`.
   -}
   fromPR :: PuzzleRep -> Puzzle
-  fromPR pr = Puzzle { size = n, grid = gr } where  -- TODO 8.2: add field `empty`, and its calculation
+  fromPR pr = Puzzle { size = n, grid = gr, empty = e } where  -- TODO 8.2: add field `empty`, and its calculation
     n = length pr
     gr (i, j)
       | 0 <= i && i < n && 0 <= j && j < n = read [pr !! i !! j]
       | otherwise = Undefined
+    e = length $ filter (== '.') (showPR pr)
+
+  {-|
+    Function to make one long string out of a `PuzzleRep`
+  -}
+  --PRtoString :: PuzzleRep -> String
+  --PRtoString (prHead : prTail) = prHead ++ PRtoString prTail
+  --PRtoString [] = ""
 
   {-|
     Function to print a puzzle.
   -}
   printP :: Puzzle -> IO ()
-  printP = printPR . toPR
+  --printP = printPR . toPR 
+  printP p = printPR  (toPR p ++ [show (empty p)])
 
   {-|
     Example 6x6 puzzle in internal format.
