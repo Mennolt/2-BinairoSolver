@@ -161,7 +161,7 @@ module Solver (
   update note cs loc p
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
-    | not (isValid q) = Invalid q
+    | not (isValidLoc loc q) = Invalid q
     | isSolved q = Solved q
     | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
