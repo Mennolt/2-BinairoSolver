@@ -100,7 +100,7 @@ module Solver (
   flattenM :: M (M a) -> M a
   flattenM (M (M p extra2) extra1) =
     M p (joinExtra extra1 extra2)
-  flattenM (M m extra) = m extra
+  flattenM (M m _) = m 
   -- incomplete patterns okay; flattenM is not called for other cases in `M`
 
   instance Monad M where
@@ -163,8 +163,8 @@ module Solver (
   update note cs loc p
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
-    | not (isValid q) = Invalid q
-    | e-1 == 0 = Solved q
+    | not (isValid q) = Invalid q (Extra False 0  [Change loc cs note])
+    | e-1 == 0 = Solved q (Extra False 0  [Change loc cs note])
     | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
