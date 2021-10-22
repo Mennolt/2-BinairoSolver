@@ -82,15 +82,15 @@ module Solver (
     In this assignment, we explore versions of this monad with additional data.
     This initial version adds a boolean, indicating whether the puzzle was changed.
   -}
-  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle, iExtra :: Extra} | Solved {sPuzzle :: Puzzle, sExtra :: Extra}
+  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle} | Solved {sPuzzle :: Puzzle}
            -- TODO 6.1 and TODO 7.1: extend the monad with shortcut cases
 
   instance Functor M where
     -- fmap :: (a -> b) -> M a -> M b
     fmap f (M p extra) = M (f p) extra
     -- TODO 6.2 and TODO 7.2: add definition patterns for cases added in `M`
-    fmap f (Invalid p extra) = Invalid p extra
-    fmap f (Solved p extra) = Solved p extra
+    fmap f (Invalid p) = Invalid p
+    fmap f (Solved p) = Solved p
 
   {-|
     Function to flatten a nested monadic value.
@@ -110,8 +110,8 @@ module Solver (
 
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`
-    Invalid p extra >>= f = Invalid p extra
-    Solved p extra >>= f = Solved p extra
+    Invalid p >>= f = Invalid p 
+    Solved p  >>= f = Solved p 
     m >>= f = flattenM (fmap f m)
 
   -- ignore this definition
@@ -129,14 +129,14 @@ module Solver (
     do printP p
        printE extra
   -- TODO 6.4 and TODO 7.4: add definition patterns for cases added in `M`
-  printM (Invalid p extra) = 
+  printM (Invalid p) = 
     do putStrLn "INVALID"
        printP p
-       printE extra
-  printM (Solved p extra) = 
+     
+  printM (Solved p ) = 
     do putStrLn "Solution"
        printP p
-       printE extra
+
 
   {-|
     Strategy type
@@ -163,8 +163,8 @@ module Solver (
   update note cs loc p
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
-    | not (isValid q) = Invalid q (Extra False 0  [Change loc cs note])
-    | e-1 == 0 = Solved q (Extra False 0  [Change loc cs note])
+    | not (isValidLoc loc q) = Invalid q
+    | e-1 == 0 = Solved q
     | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
@@ -253,8 +253,8 @@ module Solver (
       --if isValid q then return p
       --else update "mG1" (opposite cs) loc p
       case mq of
-          Invalid q extra -> update "mG1 found" (opposite cs) loc p
-          Solved q extra -> mq
+          Invalid q  -> update "mG1 found" (opposite cs) loc p
+          Solved q  -> mq
           _ -> return p
   {-|
     General contradiction meta-strategy on all empty locations and cell states.

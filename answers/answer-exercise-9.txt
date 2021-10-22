@@ -1,0 +1,35 @@
+# Answer to Exercise 9
+
+## Author Meta-Data
+
+AUTHOR1 = Mennolt van Alten
+IDNR1 = 1289667
+
+AUTHOR2 = Ignacio Jordano de Castro
+IDNR2 = 1769626
+
+DATA = 2021-10-18
+
+## Answer
+
+printM $ sB example6     
+Solution
+0 1 0 1 1 0
+1 0 0 1 0 1
+0 1 1 0 0 1
+0 1 1 0 1 0
+1 0 0 1 1 0
+1 0 1 0 0 1
+
+printM $ sB example8
+Solution
+0 1 0 0 1 1 0 1
+1 1 0 1 0 0 1 0
+1 0 1 0 0 1 1 0
+0 0 1 0 1 1 0 1
+0 1 0 1 1 0 1 0
+1 0 0 1 0 1 0 1
+0 1 1 0 1 0 0 1
+1 0 1 1 0 0 1 0
+
+## (End of Answer)

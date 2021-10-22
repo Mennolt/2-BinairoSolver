@@ -220,7 +220,16 @@ module Binairos (
     Function to get list of all (max. 6) triplets containing a given location.
   -}
   cellTripletLocs :: Location -> Puzzle -> [[Location]]
-  cellTripletLocs (i, j) p = error "TODO 9"
+  cellTripletLocs (i, j) p = filter (isValidTriplet1 (size p)) ([[(i-2,j),(i-1,j), (i,j)], [(i-1,j), (i,j), (i+1,j)], [(i,j), (i+1,j), (i+2,j)]] ++
+                 [[(i, j-2),(i,j-1),(i,j)], [(i, j-1), (i,j), (i, j+1)], [(i,j), (i,j+1), (i,j+2)]])
+
+  isValidCoord :: (Int, Int) -> Int -> Bool
+  isValidCoord (i,j) size = 0 <= i && i < size && 0 <= j && j < size
+
+  isValidTriplet1 :: Int -> [(Int, Int)] -> Bool
+  isValidTriplet1 size []  = True
+  isValidTriplet1 size (x : xs)  = isValidCoord x size && isValidTriplet1 size xs
+
 
   {-|
     Function to get list of all line locations of puzzle.
@@ -237,7 +246,10 @@ module Binairos (
     Function to get list of all (= both) lines containing a given location.
   -}
   cellLineLocs :: Location -> Puzzle -> [[Location]]
-  cellLineLocs (i, j) p = error "TODO 9"
+  cellLineLocs (i, j) p = let n1 = size p - 1
+    in [ [(i*hor + vert * m, j*vert + hor * m) | m <- [0..n1]]
+       | (hor, vert) <- [(1, 0), (0, 1)]
+       ]
 
   {-|
     Function to check whether a triplet is valid.
@@ -272,7 +284,9 @@ module Binairos (
     Function to check validity involving a single cell.
   -}
   isValidLoc :: Location -> Puzzle -> Bool
-  isValidLoc loc p = error "TODO 9"
+  isValidLoc loc p = 
+    all (isValidTriplet p) (cellTripletLocs loc p) &&
+    all (isValidLine p) (cellLineLocs loc p)
 
   {-|
     Function to get locations of all empty cells.
