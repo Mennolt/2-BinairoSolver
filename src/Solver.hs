@@ -82,15 +82,15 @@ module Solver (
     In this assignment, we explore versions of this monad with additional data.
     This initial version adds a boolean, indicating whether the puzzle was changed.
   -}
-  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle} | Solved {sPuzzle :: Puzzle}
+  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle, iExtra :: Extra} | Solved {sPuzzle :: Puzzle, sExtra :: Extra}
            -- TODO 6.1 and TODO 7.1: extend the monad with shortcut cases
 
   instance Functor M where
     -- fmap :: (a -> b) -> M a -> M b
     fmap f (M p extra) = M (f p) extra
     -- TODO 6.2 and TODO 7.2: add definition patterns for cases added in `M`
-    fmap f (Invalid p) = Invalid p
-    fmap f (Solved p) = Solved p
+    fmap f (Invalid p extra) = Invalid p extra
+    fmap f (Solved p extra) = Solved p extra
 
   {-|
     Function to flatten a nested monadic value.
@@ -100,7 +100,7 @@ module Solver (
   flattenM :: M (M a) -> M a
   flattenM (M (M p extra2) extra1) =
     M p (joinExtra extra1 extra2)
-  flattenM (M m _) = m
+  flattenM (M m extra) = m extra
   -- incomplete patterns okay; flattenM is not called for other cases in `M`
 
   instance Monad M where
@@ -110,8 +110,8 @@ module Solver (
 
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`
-    Invalid p >>= f = Invalid p
-    Solved p >>= f = Solved p
+    Invalid p extra >>= f = Invalid p extra
+    Solved p extra >>= f = Solved p extra
     m >>= f = flattenM (fmap f m)
 
   -- ignore this definition
@@ -129,12 +129,14 @@ module Solver (
     do printP p
        printE extra
   -- TODO 6.4 and TODO 7.4: add definition patterns for cases added in `M`
-  printM (Invalid p) = 
+  printM (Invalid p extra) = 
     do putStrLn "INVALID"
        printP p
-  printM (Solved p) = 
+       printE extra
+  printM (Solved p extra) = 
     do putStrLn "Solution"
        printP p
+       printE extra
 
   {-|
     Strategy type
@@ -251,8 +253,8 @@ module Solver (
       --if isValid q then return p
       --else update "mG1" (opposite cs) loc p
       case mq of
-          Invalid q -> update "mG1 found" (opposite cs) loc p
-          Solved q -> mq
+          Invalid q extra -> update "mG1 found" (opposite cs) loc p
+          Solved q extra -> mq
           _ -> return p
   {-|
     General contradiction meta-strategy on all empty locations and cell states.
