@@ -82,7 +82,7 @@ module Solver (
     In this assignment, we explore versions of this monad with additional data.
     This initial version adds a boolean, indicating whether the puzzle was changed.
   -}
-  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle}
+  data M a = M { mUnwrap :: a, mExtra :: Extra} | Invalid {iPuzzle :: Puzzle} | Solved {sPuzzle :: Puzzle}
            -- TODO 6.1 and TODO 7.1: extend the monad with shortcut cases
 
   instance Functor M where
@@ -90,6 +90,7 @@ module Solver (
     fmap f (M p extra) = M (f p) extra
     -- TODO 6.2 and TODO 7.2: add definition patterns for cases added in `M`
     fmap f (Invalid p) = Invalid p
+    fmap f (Solved p) = Solved p
 
   {-|
     Function to flatten a nested monadic value.
@@ -110,6 +111,7 @@ module Solver (
     -- (>>=) :: m a -> (a -> m b) -> m b  -- a.k.a. "bind"
     -- TODO 6.3 and TODO 7.3: add definition patterns for cases added in `M`
     Invalid p >>= f = Invalid p
+    Solved p >>= f = Solved p
     m >>= f = flattenM (fmap f m)
 
   -- ignore this definition
@@ -130,7 +132,9 @@ module Solver (
   printM (Invalid p) = 
     do putStrLn "INVALID"
        printP p
-
+  printM (Solved p) = 
+    do putStrLn "Solution"
+       printP p
 
   {-|
     Strategy type
@@ -158,6 +162,7 @@ module Solver (
     | grid p loc /= Empty = return p
     -- TODO 6.5 and 7.5, 8.3, 9.2: add/modify conditions for shortcuts results
     | not (isValid q) = Invalid q
+    | isSolved q = Solved q
     | otherwise = M q (Extra True 1 [Change loc cs note])  -- TODO 4.5 and 5.6: add extra change data
     where
       n = size p
@@ -246,6 +251,7 @@ module Solver (
       --else update "mG1" (opposite cs) loc p
       case mq of
           Invalid q -> update "mG1 found" (opposite cs) loc p
+          Solved q -> mq
           _ -> return p
   {-|
     General contradiction meta-strategy on all empty locations and cell states.
