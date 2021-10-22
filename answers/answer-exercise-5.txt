@@ -1,0 +1,263 @@
+# Answer to Exercise 5
+
+## Author Meta-Data
+
+AUTHOR1 = Mennolt van Alten
+IDNR1 = 1289667
+
+AUTHOR2 = Ignacio Jordano de Castro
+IDNR2 = 1769626
+
+DATA = 2021-10-18
+
+## Answer
+
+printPR example6PR
+. . . 1 . .
+. . 0 . . 1
+0 . . . 0 .
+. 1 1 . . .
+. . . . . .
+1 . . . 0 .
+
+printPR example8PR
+0 . 0 . 1 . . .
+. . . . . . . .
+. . . . . 1 1 .
+0 0 . . 1 . . .
+0 . . . . . 1 0
+. . . 1 . . . . 
+. . . . 1 . . .
+. . . 1 . . . 0
+
+printP example6
+. . . 1 . .
+. . 0 . . 1
+0 . . . 0 .
+. 1 1 . . .
+. . . . . .
+1 . . . 0 .
+
+printP example8
+0 . 0 . 1 . . .
+. . . . . . . .
+. . . . . 1 1 .
+0 0 . . 1 . . .
+0 . . . . . 1 0
+. . . 1 . . . .
+. . . . 1 . . .
+. . . 1 . . . 0
+
+printM $ sE example8
+0 . 0 . 1 . . .
+. . . . . . . .
+. . . . . 1 1 .
+0 0 . . 1 . . .
+0 . . . . . 1 0
+. . . 1 . . . .
+. . . . 1 . . . 
+. . . 1 . . . 0
+No change
+
+printM $ sT example8
+0 1 0 . 1 . . .
+. . . . . . . .
+. . . . . 1 1 .
+0 0 . . 1 . . .
+0 . . . . . 1 0
+. . . 1 . . . .
+. . . . 1 . . .
+. . . 1 . . . 0 
+nr. changes: 1
+Details:(0,1) -> 1  fillEmpty
+
+example8FT = mF sT example8
+printM $ example8FT
+0 1 0 . 1 . . . 
+. . . . . . . .
+1 . . . 0 1 1 0
+0 0 1 0 1 . 0 1
+0 . . . . . 1 0
+1 . . 1 . . . .
+. . . 0 1 . . .
+. . . 1 . . . 0
+nr. changes: 10
+Details:(6,3) -> 0  fillEmpty
+(5,0) -> 1  fillEmpty
+(3,7) -> 1  fillEmpty
+(3,6) -> 0  fillEmpty
+(2,0) -> 1  fillEmpty
+(3,3) -> 0  fillEmpty
+(3,2) -> 1  fillEmpty
+(2,7) -> 0  fillEmpty
+(2,4) -> 0  fillEmpty
+(0,1) -> 1  fillEmpty
+
+printM $ mF sT (mUnwrap example8FT)
+0 1 0 . 1 . . .
+. . . . . . . .
+1 . . . 0 1 1 0
+0 0 1 0 1 . 0 1
+0 . . . . . 1 0
+1 . . 1 . . . .
+. . . 0 1 . . .
+. . . 1 . . . 0 
+No change
+
+printM $ mP sFT sL example8
+0 1 0 . 1 . . . 
+. . . . . . . .
+1 . . . 0 1 1 0
+0 0 1 0 1 1 0 1
+0 . . . . . 1 0
+1 . . 1 . . . .
+. . . 0 1 . . .
+. . . 1 . . . 0
+nr. changes: 11
+Details:(3,5) -> 1  fillEmpty
+(6,3) -> 0  fillEmpty
+(5,0) -> 1  fillEmpty
+(3,7) -> 1  fillEmpty
+(3,6) -> 0  fillEmpty
+(2,0) -> 1  fillEmpty
+(3,3) -> 0  fillEmpty
+(3,2) -> 1  fillEmpty
+(2,7) -> 0  fillEmpty
+(2,4) -> 0  fillEmpty
+(0,1) -> 1  fillEmpty
+
+printM $ sFPFTL example8
+0 1 0 . 1 . . . 
+. . . . . 0 . .
+1 . . . 0 1 1 0
+0 0 1 0 1 1 0 1
+0 . . . . 0 1 0
+1 . . 1 . . . .
+. . . 0 1 . . .
+. . . 1 . . . 0
+nr. changes: 13
+Details:(4,5) -> 0  fillEmpty
+(1,5) -> 0  fillEmpty
+(3,5) -> 1  fillEmpty
+(6,3) -> 0  fillEmpty
+(5,0) -> 1  fillEmpty
+(3,7) -> 1  fillEmpty
+(3,6) -> 0  fillEmpty
+(2,0) -> 1  fillEmpty
+(3,3) -> 0  fillEmpty
+(3,2) -> 1  fillEmpty
+(2,7) -> 0  fillEmpty
+(2,4) -> 0  fillEmpty
+(0,1) -> 1  fillEmpty
+
+printM $ mF (mG sE) example8
+0 1 0 . 1 . . . 
+. . . . . 0 . . 
+1 . . . 0 1 1 0 
+0 0 1 0 1 1 0 1 
+0 . . . . 0 1 0 
+1 . . 1 . . . . 
+. . . 0 1 . . . 
+. . . 1 . . . 0 
+nr. changes: 13
+Details:(1,5) -> 0  mG1 found
+(4,5) -> 0  mG1 found        
+(3,5) -> 1  mG1 found        
+(6,3) -> 0  mG1 found
+(5,0) -> 1  mG1 found
+(3,7) -> 1  mG1 found
+(3,6) -> 0  mG1 found
+(3,3) -> 0  mG1 found
+(3,2) -> 1  mG1 found
+(2,7) -> 0  mG1 found
+(2,4) -> 0  mG1 found
+(2,0) -> 1  mG1 found
+(0,1) -> 1  mG1 found
+
+printM $ mG sL example8
+0 1 0 . 1 . . . 
+1 . . . . . . .
+1 0 . . 0 1 1 0
+0 0 1 0 1 1 0 1
+0 1 . . . 0 1 0
+1 . . 1 . . . .
+. . . 0 1 . . .
+. . . 1 . . . 0
+nr. changes: 15
+Details:(6,3) -> 0  mG1 found
+(5,0) -> 1  mG1 found
+(4,5) -> 0  mG1 found
+(4,1) -> 1  mG1 found
+(3,7) -> 1  mG1 found
+(3,6) -> 0  mG1 found
+(3,5) -> 1  mG1 found
+(3,3) -> 0  mG1 found
+(3,2) -> 1  mG1 found
+(2,7) -> 0  mG1 found
+(2,4) -> 0  mG1 found
+(2,1) -> 0  mG1 found
+(2,0) -> 1  mG1 found
+(1,0) -> 1  mG1 found
+(0,1) -> 1  mG1 found
+
+printM $ mFG sL example8
+0 1 0 0 1 1 0 1
+1 1 0 1 0 0 1 0
+1 0 1 0 0 1 1 0
+0 0 1 0 1 1 0 1
+0 1 0 1 1 0 1 0
+1 0 0 1 0 1 0 1
+0 1 1 0 1 0 0 1
+1 0 1 1 0 0 1 0
+nr. changes: 49
+Details:(6,0) -> 0  mG1 found
+(7,1) -> 0  mG1 found        
+(7,0) -> 1  mG1 found        
+(6,6) -> 0  mG1 found        
+(6,5) -> 0  mG1 found        
+(6,1) -> 1  mG1 found        
+(5,6) -> 0  mG1 found        
+(5,5) -> 1  mG1 found
+(7,6) -> 1  mG1 found
+(7,5) -> 0  mG1 found
+(7,2) -> 1  mG1 found
+(6,2) -> 1  mG1 found
+(5,2) -> 0  mG1 found
+(5,1) -> 0  mG1 found
+(0,6) -> 0  mG1 found
+(0,5) -> 1  mG1 found
+(6,7) -> 1  mG1 found
+(5,7) -> 1  mG1 found
+(1,7) -> 0  mG1 found
+(1,6) -> 1  mG1 found
+(1,4) -> 0  mG1 found
+(1,3) -> 1  mG1 found
+(0,7) -> 1  mG1 found
+(0,3) -> 0  mG1 found
+(7,4) -> 0  mG1 found
+(5,4) -> 0  mG1 found
+(4,4) -> 1  mG1 found
+(4,3) -> 1  mG1 found
+(4,2) -> 0  mG1 found
+(2,3) -> 0  mG1 found
+(2,2) -> 1  mG1 found
+(1,5) -> 0  mG1 found
+(1,2) -> 0  mG1 found
+(1,1) -> 1  mG1 found
+(6,3) -> 0  mG1 found
+(5,0) -> 1  mG1 found
+(4,5) -> 0  mG1 found
+(4,1) -> 1  mG1 found
+(3,7) -> 1  mG1 found
+(3,6) -> 0  mG1 found
+(3,5) -> 1  mG1 found
+(3,3) -> 0  mG1 found
+(3,2) -> 1  mG1 found
+(2,7) -> 0  mG1 found
+(2,4) -> 0  mG1 found
+(2,1) -> 0  mG1 found
+(2,0) -> 1  mG1 found
+(1,0) -> 1  mG1 found
+(0,1) -> 1  mG1 found
+
+## (End of Answer)
